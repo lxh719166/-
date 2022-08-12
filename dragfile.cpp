@@ -37,7 +37,7 @@ void DragFile::dropEvent(QDropEvent *event)
         //设置QListWidget的显示模式
         this->setViewMode(QListView::IconMode);
         //设置QListWidget中单元格的图片大小
-        this->setIconSize(QSize(100,100));
+        this->setIconSize(QSize(80,80));
         //设置QListWidget中单元项的间距
         this->setSpacing(10);
         //设置自动适应布局调整（Adject适应，Fixed不适应，默认不适应）
@@ -53,7 +53,7 @@ void DragFile::dropEvent(QDropEvent *event)
             //设置每个图片的名字
             imageItem->setText(namelist[namelist.size()-1]);
             //重新设置单元项图片的宽度和高度
-            imageItem->setSizeHint(QSize(100,120));
+            imageItem->setSizeHint(QSize(80,100));
             //将图片项添加到QListWidget中
             this->addItem(imageItem);
         }

@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    this->setBaseSize(700,700);
     ui->setupUi(this);
     BaiDuAPI *baidu = new BaiDuAPI;  //创建百度API对象
     setWindowTitle("双码智能识别系统");
@@ -53,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
         //        }
         progressDialog = new QProgressDialog(this);
         progressDialog->setWindowModality(Qt::WindowModal);
-        progressDialog->setMinimumDuration(5);
+        progressDialog->setMinimumDuration(1);
         progressDialog->setWindowTitle("请等待");
         progressDialog->setLabelText("识别中....");
         progressDialog->setCancelButtonText("取消");
@@ -66,6 +67,11 @@ MainWindow::~MainWindow()
 
 {
     delete ui;
+}
+
+void MainWindow::receiveLogin()
+{
+    this->show();
 }
 
 void MainWindow::getdate(QDate start, QDate finish)
@@ -281,7 +287,7 @@ void MainWindow::on_pushButton_2_clicked()   //上传数据按钮
         //设置QListWidget的显示模式
         ui->listWidget->setViewMode(QListView::IconMode);
         //设置QListWidget中单元格的图片大小
-        ui->listWidget->setIconSize(QSize(100,100));
+        ui->listWidget->setIconSize(QSize(80,80));
         //设置QListWidget中单元项的间距
         ui->listWidget->setSpacing(10);
         //设置自动适应布局调整（Adject适应，Fixed不适应，默认不适应）
@@ -296,7 +302,7 @@ void MainWindow::on_pushButton_2_clicked()   //上传数据按钮
         //设置每个图片的名字
         imageItem->setText(namelist[namelist.size()-1]);
         //重新设置单元项图片的宽度和高度
-        imageItem->setSizeHint(QSize(100,120));
+        imageItem->setSizeHint(QSize(80,100));
         //将图片项添加到QListWidget中
         ui->listWidget->addItem(imageItem);
     }

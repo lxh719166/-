@@ -26,6 +26,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void receiveLogin();
     int Detection_eye;
     void get_result_dection_eye(int num);
     //获得开始日期和结束日期

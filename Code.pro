@@ -23,19 +23,25 @@ SOURCES += \
     database.cpp \
     dateset.cpp \
     dragfile.cpp \
+    login.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    registered.cpp
 
 HEADERS += \
     baiduapi.h \
     database.h \
     dateset.h \
     dragfile.h \
-    mainwindow.h
+    login.h \
+    mainwindow.h \
+    registered.h
 
 FORMS += \
     dateset.ui \
-    mainwindow.ui
+    login.ui \
+    mainwindow.ui \
+    registered.ui
 
 QT.testlib.CONFIG -= console
 
