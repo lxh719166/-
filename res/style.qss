@@ -1,0 +1,19 @@
+#MainWindow{   
+    background-color:#222831;
+}
+
+#listresult{
+    background-color:#eeeeee
+    color:#00adb5;
+    border-radius:2;
+}
+
+#label{
+   font: 20pt "楷体";
+   color:#eeeeee;
+}
+
+QPushButton{
+    background-color:#393e46
+    color:#eeeeee
+}
