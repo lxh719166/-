@@ -10,7 +10,8 @@
 #include <QPixmap>
 #include <QProgressDialog>
 #include <QSqlQuery>
-#include <QTextCodec>
+#include <QSqlRecord>
+#include <QTextCodec>                                //listresult
 #include <xlsxformat.h>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -18,6 +19,18 @@ MainWindow::MainWindow(QWidget *parent)
 {
     this->setBaseSize(700,700);
     ui->setupUi(this);
+    //设置tablewidget
+    ui->table_user->setRowCount(50);
+    ui->table_user->setColumnCount(4);
+    QStringList header_user;
+    header_user<<"姓名"<<"手机号"<<""<<"";   //表头
+    ui->table_user->setHorizontalHeaderLabels(header_user);
+    ui->table_result->setRowCount(50);
+    ui->table_result->setColumnCount(8);
+    QStringList header_result;
+    header_result<<"姓名"<<"身份证号"<<"手机号"<<"健康码状态"<<"行程码状态"<<"7日途径"<<"健康码提交时间"<<"行程码提交时间";
+    ui->table_result->setHorizontalHeaderLabels(header_result);
+    ui->stackwidget->setCurrentIndex(0);  //设置当前显示的页面
     BaiDuAPI *baidu = new BaiDuAPI;  //创建百度API对象
     setWindowTitle("双码智能识别系统");
     setWindowIcon(QIcon(":/res/icon.png"));
@@ -69,10 +82,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::receiveLogin()
+void MainWindow::receiveLogin(QString username)
 {
     this->show();
+    m_username = username;
 }
+
 
 void MainWindow::getdate(QDate start, QDate finish)
 {
@@ -91,14 +106,14 @@ void MainWindow::pictureclass(QUrl url)
     connect(baidu,&BaiDuAPI::send_classific_result,[=](QString jiankang,double value_1,QString xingcheng,double value_2,QString qita,double value_3){
         if(value_1 > value_2 && value_1>value_3){  //健康码的情况
             //显示分类结果
-            ui->listresult->addItem(jiankang);
+            //            ui->listresult->addItem(jiankang);
             //对健康码上的小眼睛进行检测，如果没开，信息入库，如果开了，进行OCR
             health_eye_detection(base64,baidu);
             //显示小眼睛识别结果
             connect(baidu,&BaiDuAPI::send_detection_result_eye,[=](int result){
                 //                qDebug()<<"眼睛识别结果:"<<result;
                 if(result){
-                    ui->listresult->addItem("眼睛开启");
+                    //                    ui->listresult->addItem("眼睛开启");
                     //健康码的OCR识别
                 } else{  //眼睛关闭信息入库
                     QSqlQuery table = db.exec("select * from eye_detection");
@@ -122,7 +137,7 @@ void MainWindow::pictureclass(QUrl url)
         else if(value_2>value_1&&value_2>value_3){ //行程码的情况
             //显示分类结果
             //            qDebug()<<"行程码";
-            ui->listresult->addItem(xingcheng);
+            //            ui->listresult->addItem(xingcheng);
             //对行程码上的码的状态进行检测，信息入库
             //对行程码进行OCR识别
 
@@ -136,7 +151,7 @@ void MainWindow::pictureclass(QUrl url)
         }
         else if(value_3>value_1&&value_3>value_2){ //其他的情况
             //qDebug()<<"其他";
-            ui->listresult->addItem(qita);
+            //            ui->listresult->addItem(qita);
             //qDebug()<<"当前图片index："<<baidu->picindex;
             if(baidu->picindex<m_url.size())
                 pictureclass(m_url.at(baidu->picindex));
@@ -166,11 +181,9 @@ void MainWindow::linkdatabase()
     db.setPassword("lu719166");
     bool ok = db.open();
     if (db.isOpen()){
-        QMessageBox::information(this,"通知","数据库已成功连接");
         status_label->setText("数据库已连接");
     }
     else {
-        QMessageBox::information(this,"通知","数据库连接失败");
         status_label->setText("数据库连接失败");
     }
 }
@@ -246,28 +259,28 @@ void MainWindow::on_cleardata_clicked()    //清除数据按钮
 
 void MainWindow::on_actionaddperson_triggered()  //添加人员按钮
 {
-    if(!db.isOpen()){
-        QMessageBox::information(this,"警告","数据库未连接");
-        return;
-    }
+    //连接数据库
+    if(!db.isOpen())
+        linkdatabase();
     QSqlQuery table = db.exec("select * from person");
-    QString Qurl = QFileDialog::getOpenFileName(this,"打开文件","./","*.txt");
+    QString Qurl = QFileDialog::getOpenFileName(this,"打开文件","./","*.xlsx x.xls");
     //读取文件
-    QFile file(Qurl);
-    //打开文件，只读
-    if(file.open(QIODevice::ReadOnly|QIODevice::Text)){
-        QString line;
-        while (!file.atEnd()) {
-            line = file.readLine();
-            //插入数据
-            table.prepare("insert into person(name,phonenumber) values(?,?);");
-            table.addBindValue(line);
+    QXlsx::Document xlsx(Qurl);
+    QXlsx::CellRange range = xlsx.dimension();
+    //插入数据
+    qDebug()<<"行数"<<range.rowCount();
+    qDebug()<<"列数"<<range.columnCount();
+    for(int i=1;i <= range.rowCount();i++){
+        table.prepare("insert into "+m_username+"_person(name,phonenumber) values(?,?);");
+        if(xlsx.cellAt(i,1)!=NULL)
+            table.addBindValue(xlsx.cellAt(i,1)->value().toString());
+        else
             table.addBindValue(" ");
-            table.exec();
-            //            qDebug()<<line;
-        }
-    }
-    file.close();
+        if(xlsx.cellAt(i,2)!=NULL)
+            table.addBindValue(xlsx.cellAt(i,2)->value().toString());
+        else
+            table.addBindValue("");
+        table.exec();}
 }
 
 void MainWindow::on_pushButton_2_clicked()   //上传数据按钮
@@ -314,11 +327,6 @@ void MainWindow::on_actionsetdate_triggered()   //设置日期按钮
     dateEdit->show();
 }
 
-void MainWindow::on_actionconnectdatabase_triggered()
-{
-    //连接数据库
-    linkdatabase();
-}
 
 void MainWindow::on_get_excel_clicked()
 {
@@ -328,32 +336,72 @@ void MainWindow::on_get_excel_clicked()
         return;
     }
     open_Excel();
-    //
     QSqlQuery query_health;  //健康码信息列表
     QSqlQuery query_tour;  //行程码信息列表
-    query_health.exec("select * from health_code;");//从health_code中得到数据
-    query_tour.exec("select * from tour_code;");  //从tour_code中得到数据
+    query_health.exec("select * from "+m_username+"_health;");//从health_code中得到数据
+    query_tour.exec("select * from "+m_username+"_tour;");  //从tour_code中得到数据
     while(query_health.next()){ //一行一行遍历
-    write_data_health(row_init,query_health.value(0).toString(),    // 姓名
-               query_health.value(1).toString(),    //身份证号
-               query_health.value(3).toString(),    //健康码状态
-               QDate(query_health.value(2).toString().split('.').at(0).toInt(),query_health.value(2).toString().split('.').at(1).toInt(),query_health.value(2).toString().split('.').at(2).toInt()),    //健康码日期
-               format_1
-               );
-    row_init++;
+        write_data_health(row_init,query_health.value(0).toString(),    // 姓名
+                          query_health.value(1).toString(),    //身份证号
+                          query_health.value(3).toString(),    //健康码状态
+                          QDate(query_health.value(2).toString().split('.').at(0).toInt(),query_health.value(2).toString().split('.').at(1).toInt(),query_health.value(2).toString().split('.').at(2).toInt()),    //健康码日期
+                          format_1
+                          );
+        row_init++;
     }
     row_init = 3;
     while(query_tour.next()){//一行一行遍历
-    write_data_tour(row_init,query_tour.value(0).toString(),
-                    query_tour.value(2).toString(),
-                    query_tour.value(3).toString(),
-                    QDate(query_tour.value(1).toString().split('.').at(0).toInt(),query_tour.value(1).toString().split('.').at(1).toInt(),query_tour.value(1).toString().split('.').at(2).toInt()),    //健康码日期
-                    format_1
-                    );
-    row_init++;
+        write_data_tour(row_init,query_tour.value(0).toString(),
+                        query_tour.value(2).toString(),
+                        query_tour.value(3).toString(),
+                        QDate(query_tour.value(1).toString().split('.').at(0).toInt(),query_tour.value(1).toString().split('.').at(1).toInt(),query_tour.value(1).toString().split('.').at(2).toInt()),    //健康码日期
+                        format_1
+                        );
+        row_init++;
     }
-//    write_data(3,"卢校虎","410883199809023058","绿码","绿码",QDate(2022,3,10),QDate(2022,3,11),"焦作市",format_1);
     xlsx.saveAs(filename);
     if(filename!="")
-        QMessageBox::information(this,"通知","导出成功");
+    QMessageBox::information(this,"通知","导出成功");
+}
+
+void MainWindow::on_show_user_clicked()  //展示人员表
+{
+    if(ui->stackwidget->currentIndex()!=0)
+        ui->stackwidget->setCurrentIndex(0);
+    if(!db.isOpen()){                      //未连接数据库情况
+        linkdatabase();
+    }
+    //从数据库读入数据
+    QSqlQuery query_person;  //行程码信息列表
+    query_person.exec("select * from "+m_username+"_person;");//从health_code中得到数据
+    int row = 0;
+    while(query_person.next()){ //一行一行遍历
+        ui->table_user->setItem(row,0,new QTableWidgetItem(query_person.value(0).toString()));
+        ui->table_user->setItem(row,1,new QTableWidgetItem(query_person.value(1).toString()));
+        row++;
+    }
+}
+
+void MainWindow::on_show_result_clicked()  //展示结果表
+{
+    if(ui->stackwidget->currentIndex()!=1)
+        ui->stackwidget->setCurrentIndex(1);
+    if(!db.isOpen()){                      //未连接数据库情况
+        linkdatabase();
+    }
+    //展示结果
+    QSqlQuery query_all;  //行程码信息列表
+    query_all.exec("Select a.name as 姓名,b.number as 身份证号,a.phonenumber as 手机号,b.status as 健康码状态,c.status as 行程码状态,c.place as 7日途径,b.date as 健康码提交时间,c.date as 行程码提交时间 from "+m_username+"_person a left join "+m_username+"_health b on a.name=b.name left join "+m_username+"_tour c on a.phonenumber=c.phonenumber;");
+    int row = 0;
+    while(query_all.next()){    //
+    ui->table_result->setItem(row,0,new QTableWidgetItem(query_all.value(0).toString()));
+    ui->table_result->setItem(row,1,new QTableWidgetItem(query_all.value(1).toString()));
+    ui->table_result->setItem(row,2,new QTableWidgetItem(query_all.value(2).toString()));
+    ui->table_result->setItem(row,3,new QTableWidgetItem(query_all.value(3).toString()));
+    ui->table_result->setItem(row,4,new QTableWidgetItem(query_all.value(4).toString()));
+    ui->table_result->setItem(row,5,new QTableWidgetItem(query_all.value(5).toString()));
+    ui->table_result->setItem(row,6,new QTableWidgetItem(query_all.value(6).toString()));
+    ui->table_result->setItem(row,7,new QTableWidgetItem(query_all.value(7).toString()));
+    row++;
+    }
 }

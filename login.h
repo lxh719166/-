@@ -20,7 +20,8 @@ public:
     void linkdatabase();
 
 signals:
-     void showmain();
+     void showmain(QString username);
+     void sendlogusername(QString username);
 private slots:
     void on_btn_regi_clicked();
 

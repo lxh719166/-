@@ -61,9 +61,12 @@ void registered::on_pushButton_clicked()
             result_user.addBindValue(username);
             result_user.addBindValue(password);
             result_user.exec();
+            //创建该用户所用到的表
+            db.exec("create table "+username+"_person(name varchar(20),phonenumber varchar(20));");
+            db.exec("create table "+username+"_health(name varchar(20),number varchar(20),date varchar(20),status varchar(20));");
+            db.exec("create table "+username+"_tour(phonenumber varchar(20),date varchar(20),place varchar(20),status varchar(20));");
             QMessageBox::information(this,"通知","注册成功！");
             emit sendusername(username);
-            db.close();
             this->close();
         }
     }}

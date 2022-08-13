@@ -75,11 +75,11 @@ void login::on_btn_login_clicked()
     if(password_list.first())
         password_Database = password_list.value(password_list.record().indexOf("password")).toString();
     if(password!=NULL){
-        if(password == password_Database){
-            emit showmain();
+        if(password == password_Database){   //密码正确的情况
+            emit showmain(username);
             db.close();
             this->close();
-        }else{
+        }else if(password != password_Database){
             QMessageBox::information(this,"警告","密码错误，请重新输入");
         }}
 }

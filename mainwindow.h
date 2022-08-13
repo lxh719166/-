@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void receiveLogin();
+    void receiveLogin(QString username);   //接收登录成功的通知
     int Detection_eye;
     void get_result_dection_eye(int num);
     //获得开始日期和结束日期
@@ -47,16 +47,17 @@ private slots:
     void on_cleardata_clicked();
     void on_actionaddperson_triggered();
     void on_pushButton_2_clicked();
-
     void on_actionsetdate_triggered();
-
-    void on_actionconnectdatabase_triggered();
-
     void on_get_excel_clicked();
+
+    void on_show_user_clicked();
+
+    void on_show_result_clicked();
 
 signals:
     void class_finish();
 private:
+    QString m_username;  //保存用户的用户名，用于查询不同的表
     QXlsx::Format format_1;  //excel文字格式
     QProgressDialog *progressDialog;  //进度条
     Ui::MainWindow *ui;
