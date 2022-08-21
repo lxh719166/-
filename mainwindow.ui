@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>740</width>
+    <width>846</width>
     <height>718</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="labelTitle">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -182,14 +182,14 @@
       <property name="title">
        <string>识别结果</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QStackedWidget" name="stackwidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="page">
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <widget class="QTableWidget" name="table_user"/>
            </item>
@@ -202,6 +202,13 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="page_3">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QTableWidget" name="table_analyze"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
        <item>
@@ -210,14 +217,21 @@
           <item>
            <widget class="QPushButton" name="show_user">
             <property name="text">
-             <string>查看人员</string>
+             <string>我的人员</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="show_result">
             <property name="text">
-             <string>查看结果</string>
+             <string>总体情况</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="show_analyze">
+            <property name="text">
+             <string>分析结果</string>
             </property>
            </widget>
           </item>
@@ -241,7 +255,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>740</width>
+     <width>846</width>
      <height>23</height>
     </rect>
    </property>
@@ -249,25 +263,70 @@
     <property name="title">
      <string>开始</string>
     </property>
-    <addaction name="actionaddperson"/>
+    <addaction name="actionchangeuser"/>
+    <addaction name="separator"/>
     <addaction name="actionsetdate"/>
+    <addaction name="actionaddperson"/>
+    <addaction name="separator"/>
+    <addaction name="actionclear_data"/>
+    <addaction name="actiondele_person"/>
    </widget>
    <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionaddperson">
+   <property name="icon">
+    <iconset>
+     <disabledon>:/res/添加人员.png</disabledon>
+    </iconset>
+   </property>
    <property name="text">
     <string>添加人员</string>
    </property>
   </action>
   <action name="actionsetdate">
+   <property name="icon">
+    <iconset>
+     <disabledon>:/res/设置时间.png</disabledon>
+    </iconset>
+   </property>
    <property name="text">
-    <string>设置时间</string>
+    <string>设置日期</string>
    </property>
   </action>
   <action name="actionconnectdatabase">
    <property name="text">
     <string>连接数据库</string>
+   </property>
+  </action>
+  <action name="actionchangeuser">
+   <property name="icon">
+    <iconset>
+     <disabledon>:/res/切换用户.png</disabledon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>切换用户</string>
+   </property>
+  </action>
+  <action name="actiondele_person">
+   <property name="icon">
+    <iconset>
+     <disabledon>:/res/清空人员.png</disabledon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>清空人员</string>
+   </property>
+  </action>
+  <action name="actionclear_data">
+   <property name="icon">
+    <iconset>
+     <disabledon>:/res/清空记录.png</disabledon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>清空之前结果</string>
    </property>
   </action>
  </widget>

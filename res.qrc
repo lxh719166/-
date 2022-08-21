@@ -1,5 +1,13 @@
 <RCC>
     <qresource prefix="/">
         <file>res/icon.png</file>
+        <file>res/清空记录.png</file>
+        <file>res/清空人员.png</file>
+        <file>res/设置时间.png</file>
+        <file>res/添加人员.png</file>
+        <file>res/切换用户.png</file>
+        <file>res/封面背景.png</file>
+        <file>res/标题文字.png</file>
+        <file>res/主界面标题.png</file>
     </qresource>
 </RCC>

@@ -1,19 +1,32 @@
-#MainWindow{   
-    background-color:#222831;
-}
+QPushButton {  
+    /* 前景色 */  
+    color:red;  
 
-#listresult{
-    background-color:#eeeeee
-    color:#00adb5;
-    border-radius:2;
-}
+    /* 背景色 */  
+    background-color:rgb(30,75,10);  
 
-#label{
-   font: 20pt "楷体";
-   color:#eeeeee;
-}
+    border-style:outset;  
 
-QPushButton{
-    background-color:#393e46
-    color:#eeeeee
-}
+    /* 边框宽度 */  
+    border-width:2px;  
+
+    /* 边框颜色 */  
+    border-color:rgb(10,45,110);  
+
+    /* 边框倒角 */  
+    border-radius:10px;  
+
+    /* 字体 */  
+    font:bold 14px;  
+
+    /* 控件最小宽度 */  
+    min-width:100px;  
+
+    /* 控件最小高度 */  
+    min-height:20px;  
+
+    /* 内边距 */  
+    padding:4px;  
+}  
+
+

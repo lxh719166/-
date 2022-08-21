@@ -20,6 +20,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     baiduapi.cpp \
+    changeuser.cpp \
     database.cpp \
     dateset.cpp \
     dragfile.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
 
 HEADERS += \
     baiduapi.h \
+    changeuser.h \
     database.h \
     dateset.h \
     dragfile.h \
@@ -38,6 +40,7 @@ HEADERS += \
     registered.h
 
 FORMS += \
+    changeuser.ui \
     dateset.ui \
     login.ui \
     mainwindow.ui \
@@ -51,4 +54,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
+    qss.qrc \
     res.qrc

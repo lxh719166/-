@@ -4,20 +4,35 @@
 #include <QMessageBox>
 #include <QSqlQuery>
 #include <QSqlRecord>
-
+#include <QPixmap>
 login::login(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::login)
 {
+
     ui->setupUi(this);
+    this->setFixedSize(500,290);
+    //设置样式表
+    this->setStyleSheet("QPushButton:pressed,#show_analyze:pressed{border-style:solid;border-radius: 5px;width: 100px;height: 40px;color:#EBEBD3;background-color:#38523d} "
+                        "QPushButton{border-style:solid;border-radius: 5px;width: 100px;height: 40px;color:#EBEBD3;background-color:#708B75}");
+    //设置登录页标题
+    QPixmap pic_title;
+    pic_title.load(":/res/标题文字.png");
+    pic_title.scaled(ui->Title_login->size(),Qt::KeepAspectRatio);
+    ui->Title_login->setScaledContents(true);
+    ui->Title_login->setAlignment(Qt::AlignCenter);
+    ui->Title_login->setPixmap(pic_title);
+    //设置背景图片
+    QPixmap pic_login;
+    pic_login.load(":/res/封面背景.png");
+    pic_login.scaled(ui->image_login->width(),ui->image_login->height(),Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    ui->image_login->setScaledContents(true);
+    ui->image_login->setPixmap(pic_login);
     ui->username->setPlaceholderText("请输入用户名");
     ui->password->setPlaceholderText("请输入密码");
     this->setWindowTitle("登录界面");
     //连接数据库
     linkdatabase();
-    connect(regis,&registered::sendusername,[=](QString usn){
-        ui->username->setText(usn);
-    });
 }
 
 login::~login()

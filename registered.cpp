@@ -8,14 +8,15 @@ registered::registered(QWidget *parent) :
     ui(new Ui::registered)
 {
     ui->setupUi(this);
+    this->setStyleSheet("QPushButton:pressed,#show_analyze:pressed{border-style:solid;border-radius: 5px;width: 100px;height: 40px;color:#EBEBD3;background-color:#38523d} "
+                        "QPushButton{border-style:solid;border-radius: 5px;width: 100px;height: 40px;color:#EBEBD3;background-color:#708B75}");
+    this->setWindowTitle("注册界面");
+    this->setFixedSize(330,220);
     ui->res_username->setPlaceholderText("请输入用户名");
     ui->res_password->setPlaceholderText("请输入密码");
     ui->res_password_again->setPlaceholderText("请再次输入密码");
     //首先连接数据库
     linkdatabase();
-
-
-
 }
 
 registered::~registered()
@@ -65,6 +66,7 @@ void registered::on_pushButton_clicked()
             db.exec("create table "+username+"_person(name varchar(20),phonenumber varchar(20));");
             db.exec("create table "+username+"_health(name varchar(20),number varchar(20),date varchar(20),status varchar(20));");
             db.exec("create table "+username+"_tour(phonenumber varchar(20),date varchar(20),place varchar(20),status varchar(20));");
+            db.exec("create table "+username+"_eyeDetection(Filename varchar(50),status varchar(20));");
             QMessageBox::information(this,"通知","注册成功！");
             emit sendusername(username);
             this->close();

@@ -25,8 +25,6 @@ void dateset::on_datesetfinish_clicked()
          QMessageBox::information(this,"错误","开始时间晚于结束时间");
          return;
     }
-//    qDebug()<<ui->dateEdit_start->date().toString(Qt::ISODate);
-//    qDebug()<<ui->dateEdit_finish->date().toString(Qt::ISODate);
     emit send_date(ui->dateEdit_start->date(),ui->dateEdit_finish->date());
     QMessageBox::information(this,"通知","设置成功");
 }

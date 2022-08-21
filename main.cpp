@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include "login.h"
+#include <QTextStream>
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
